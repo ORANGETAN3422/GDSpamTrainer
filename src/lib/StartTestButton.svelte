@@ -58,7 +58,7 @@
 </script>
 
 <p>
-  {testActive ? "In progress..." : "Press space to begin"}
+  <b>{testActive ? "In progress..." : "Press space to begin"}</b>
 </p>
 
 <ResultsCalculator bind:testActive bind:timeLeft bind:testTime></ResultsCalculator>

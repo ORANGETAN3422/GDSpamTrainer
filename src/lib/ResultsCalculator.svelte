@@ -33,7 +33,7 @@
             let timeDifference =
                 clickTimes[clickTimes.length - 1] -
                 clickTimes[clickTimes.length - 2];
-            clickIntervals.push(timeDifference);
+            clickIntervals = [...clickIntervals, timeDifference];
         }
     }
 
@@ -43,7 +43,7 @@
             document.removeEventListener("keydown", handleKeydown);
         };
     });
-
+    
     $: if (testActive) {
         clickTimes = [];
         clickIntervals = [];
@@ -57,12 +57,12 @@
         for (let i = 0; i < data.length; i++) {
             sum += data[i];
         }
-        return Math.round(sum / data.length);
+        return Math.round(sum / data.length) + " ms";
     }
 
     function calculateMedian(data) {
         data = data.slice().sort((x, y) => x - y);
-        return Math.round(data[Math.round((data.length - 1) / 2)]);
+        return Math.round(data[Math.round((data.length - 1) / 2)]) + " ms";
     }
 
     function calculateMode(data) {
@@ -84,39 +84,43 @@
             }
             currentStreak++;
         }
-        return currentStreak > bestStreak ? currentElem : bestElem;
+        return currentStreak > bestStreak ? currentElem : bestElem + " ms";
     }
 
     function fetchLongest(data) {
         data = data.slice().sort((x, y) => x - y);
-        return data[0];
+        return data[data.length - 1] + " ms";
     }
 
     function fetchShortest(data) {
         data = data.slice().sort((x, y) => x - y);
-        return data[data.length - 1];
+        return data[0] + " ms";
     }
 </script>
 
-<p>
-    {formatMilliseconds(timeLeft)}
-</p>
-
-<br />
-
-{#if !testActive}
+<main>
     <p>
-        Mean Time Difference: {calculateMean(clickIntervals)} ms
-        <br />
-        Median Time Difference: {calculateMedian(clickIntervals)} ms
-        <br />
-        Mode Time Difference: {calculateMode(clickIntervals)} ms
-        <br />
-        <br />
-        Largest Time Difference: {fetchLongest(clickIntervals)} ms
-        <br />
-        Shortest Time Differene: {fetchShortest(clickIntervals)} ms
+        {formatMilliseconds(timeLeft)}
     </p>
 
-    <ResultsGraph bind:clickIntervals></ResultsGraph>
-{/if}
+    <br />
+
+    {#if !testActive && clickIntervals.length > 1}
+        <p>
+            Mean Time Difference: {calculateMean(clickIntervals)}
+            <br />
+            Median Time Difference: {calculateMedian(clickIntervals)}
+            <br />
+            Mode Time Difference: {calculateMode(clickIntervals)}
+            <br />
+            <br />
+            Largest Time Difference: {fetchLongest(clickIntervals)}
+            <br />
+            Shortest Time Difference: {fetchShortest(clickIntervals)}
+        </p>
+    {/if}
+
+    {#if clickIntervals}
+       <ResultsGraph {clickIntervals} />
+    {/if}
+</main>
