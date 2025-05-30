@@ -3,7 +3,7 @@
   import ResultsCalculator from "./ResultsCalculator.svelte";
 
   let startTime = 0;
-  let debounceTime = 2 * 1000;
+  let debounceTime = 1 * 1000;
   let debouncing = false;
   export let testTime = 5; // in seconds
   export let testActive = false;
@@ -40,7 +40,8 @@
 
       updateElapsedInterval = setInterval(() => {
         timeLeft = testTime * 1000 - Math.floor(performance.now() - startTime);
-      }, 8); // about 125 updates per second
+        console.log(testTime)
+      }, 6); // about 167 updates per second
     }
   }
 
@@ -57,8 +58,8 @@
   });
 </script>
 
-<p>
-  <b>{testActive ? "In progress..." : "Press space to begin"}</b>
-</p>
+<h3>
+  <b>{testActive ? "In progress..." : (debouncing ? "Please Wait..." : "Start spamming [Space] to being")}</b>
+</h3>
 
 <ResultsCalculator bind:testActive bind:timeLeft bind:testTime></ResultsCalculator>
