@@ -40,7 +40,7 @@
 
       updateElapsedInterval = setInterval(() => {
         timeLeft = testTime * 1000 - Math.floor(performance.now() - startTime);
-      }, 16); // about 60 updates per second
+      }, 8); // about 125 updates per second
     }
   }
 
