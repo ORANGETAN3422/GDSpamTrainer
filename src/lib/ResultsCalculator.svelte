@@ -46,7 +46,7 @@
     });
 
     $: if (testActive) {
-        currTestTime = testTime
+        currTestTime = testTime;
         clickTimes = [];
         clickIntervals = [];
         timeElapsed = 0;
@@ -55,11 +55,9 @@
 
 <main>
     <p>
-        {testActive ? formatMilliseconds(timeLeft) + " left" : " "}
+        {clickIntervals.length}
     </p>
-
     <br />
-
     {#if clickIntervals}
         <ResultsGraph {clickIntervals} />
     {/if}
@@ -89,10 +87,10 @@
         <button class="time-button" onclick={() => (testTime = 10)}>
             10 Seconds</button
         >
-         <button class="time-button" onclick={() => (testTime = 30)}>
+        <button class="time-button" onclick={() => (testTime = 30)}>
             30 Seconds</button
         >
-         <button class="time-button" onclick={() => (testTime = 60)}>
+        <button class="time-button" onclick={() => (testTime = 60)}>
             1 minute</button
         >
         <button class="time-button" onclick={() => (testTime = 120)}>
@@ -100,6 +98,10 @@
         >
     </div>
 </section>
+<br />
+<h1>
+    {testActive ? formatMilliseconds(timeLeft): " "}
+</h1>
 
 <style>
     .dropdown-wrapper {
