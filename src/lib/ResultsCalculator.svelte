@@ -11,6 +11,8 @@
 
     let clickTimes = [];
     let clickIntervals = [];
+    let prevInput = 0;
+    let keyReleased = true;
 
     function formatMilliseconds(ms) {
         let minutes = Math.floor(ms / 60000);
@@ -24,10 +26,13 @@
     function handleKeydown(e) {
         if (e.code !== "Space") return;
         if (!testActive) return;
+        if (!keyReleased) return;
 
         timeElapsed = testTime * 1000 - timeLeft;
 
-        clickTimes.push(timeElapsed);
+        clickTimes.push(performance.now());
+        prevInput = performance.now();
+        keyReleased = false;
 
         if (clickTimes.length > 1) {
             // Calculate the time difference between the last two clicks
@@ -38,8 +43,16 @@
         }
     }
 
+    function handleKeyup(e) {
+         if (e.code !== "Space") return;
+        if (!testActive) return;
+
+        keyReleased = true;
+    }
+
     onMount(() => {
         document.addEventListener("keydown", handleKeydown);
+        document.addEventListener("keyup", handleKeyup);
         return () => {
             document.removeEventListener("keydown", handleKeydown);
         };
@@ -50,6 +63,8 @@
         clickTimes = [];
         clickIntervals = [];
         timeElapsed = 0;
+        prevInput = 0;
+        keyReleased = true;
     }
 </script>
 
