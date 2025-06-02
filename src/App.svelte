@@ -3,6 +3,7 @@
   import ResultsCalculator from "./lib/ResultDisplays/ResultsCalculator.svelte";
   import TimeSelector from "./lib/TimeSelector.svelte";
   import Timer from "./lib/Timer.svelte";
+    import Metronome from "./lib/Metronome.svelte";
 
   export let testTime = 5; // in seconds
   export let testActive = false;
@@ -17,6 +18,8 @@
 
   <section class="right-section">
     <TimeSelector bind:testTime bind:testActive />
+    <h2>Metronome</h2>
+    <Metronome bind:testActive/>
   </section>
 </main>
 

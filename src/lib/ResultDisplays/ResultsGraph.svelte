@@ -74,7 +74,7 @@
             const x = padding + i * stepX;
             const y = height - padding - (val / maxVal) * graphHeight;
             ctx.beginPath();
-            ctx.arc(x, y, 2, 0, Math.PI * 2);
+            ctx.arc(x, y, 3, 0, Math.PI * 2);
             ctx.fill();
         });
     }
