@@ -13,7 +13,7 @@
 <main>
   <Timer bind:testActive bind:testTime bind:timeLeft bind:debouncing/>
   <StartTestButton bind:testActive bind:debouncing></StartTestButton>
-  <ResultsCalculator bind:testActive bind:timeLeft bind:testTime />
+  <ResultsCalculator bind:testActive bind:timeLeft bind:testTime bind:debouncing />
 
   <section class="right-section">
     <TimeSelector bind:testTime bind:testActive />
@@ -32,5 +32,6 @@
     width: 23%;
 
     background-color: rgba(0, 0, 0, 0.15);
+    z-index: 100;
   }
 </style>
