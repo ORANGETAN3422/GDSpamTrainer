@@ -1,48 +1,79 @@
 <script>
-    import { onDestroy } from "svelte";
+  import { onDestroy } from "svelte";
+  export let testActive;
 
-    export let testActive;
+  let metronomeSpeed = 10; // CPS
+  let context;
+  let buffer;
+  let timer;
 
-    let metronomeSound = new Audio("metronome.mp3");
-    let metronomeSpeed = 10; // In CPS
+  let currentSound = "metronome.mp3";
 
-    let timer;
-
-    function playSound() {
-        metronomeSound.currentTime = 0;
-        metronomeSound.play();
+  async function initAudio() {
+    if (!context) {
+      context = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (context.state === "suspended") {
+      await context.resume();
     }
 
-    function stopRepeating() {
-        clearInterval(timer);
-    }
+    const soundPath = `public/sounds/${currentSound}`; // don't include "public/"
+    const res = await fetch(soundPath);
+    const arrayBuffer = await res.arrayBuffer();
+    buffer = await context.decodeAudioData(arrayBuffer);
+  }
 
-    $: if (testActive) {
-        stopRepeating();
-        timer = setInterval(() => {
-            playSound();
-        }, 1000 / metronomeSpeed);
-    }
+  function playSound() {
+    if (!buffer || !context) return;
+    const source = context.createBufferSource();
+    source.buffer = buffer;
+    source.connect(context.destination);
+    source.start();
+  }
 
-    $: if (!testActive) {
-        stopRepeating();
-    }
+  function startRepeating() {
+    stopRepeating();
+    timer = setInterval(() => {
+      playSound();
+    }, 1000 / metronomeSpeed);
+  }
 
-    // Clean up on component destroy
-    onDestroy(stopRepeating);
+  function stopRepeating() {
+    clearInterval(timer);
+  }
+
+  // React to testActive changes
+  $: if (testActive) {
+    initAudio().then(startRepeating);
+  } else {
+    stopRepeating();
+  }
+
+  // React to sound change WHILE playing
+  $: if (testActive && currentSound) {
+    initAudio();
+  }
+
+  onDestroy(stopRepeating);
 </script>
 
-<div class="space-y-4">
-    <label for="interval">
-        {metronomeSpeed} CPS / {metronomeSpeed * 60} BPM
-        <br />
-    </label>
-    <input
-        id="interval"
-        type="range"
-        min="1"
-        max="10"
-        step="1"
-        bind:value={metronomeSpeed}
-    />
+<div>
+  <label for="interval">
+    {metronomeSpeed} CPS / {metronomeSpeed * 60} BPM
+    <br />
+  </label>
+  <input
+    id="interval"
+    type="range"
+    min="1"
+    max="20"
+    step="1"
+    bind:value={metronomeSpeed}
+  />
+
+  <div class="sound-selection-buttons">
+    <button on:click={() => (currentSound = "metronome.mp3")}>Metronome</button>
+    <button on:click={() => (currentSound = "mouse.ogg")}>Mouse Click</button>
+    <button on:click={() => (currentSound = "keyboard.ogg")}>Keyboard Click</button>
+  </div>
 </div>
