@@ -2,6 +2,8 @@
     import { onDestroy } from "svelte";
     export let testActive;
 
+    let metronomeOn = false;
+
     let metronomeSpeed = 10; // CPS
     let context;
     let buffer;
@@ -12,7 +14,7 @@
 
     async function initAudio() {
         if (!context) {
-            context = new (window.AudioContext || window.webkitAudioContext)();
+            context = new window.AudioContext();
         }
         if (context.state === "suspended") {
             await context.resume();
@@ -64,38 +66,56 @@
     onDestroy(stopRepeating);
 </script>
 
-<div>
-    <label for="interval">
-        {metronomeSpeed} CPS / {metronomeSpeed * 60} BPM
-        <br />
-    </label>
-    <input
-        id="interval"
-        type="range"
-        min="1"
-        max="20"
-        step="1"
-        bind:value={metronomeSpeed}
-    />
+{#if metronomeOn}
+    <div>
+        <label for="interval">
+            {metronomeSpeed} CPS / {metronomeSpeed * 60} BPM
+            <br />
+        </label>
+        <input
+            id="interval"
+            type="range"
+            min="1"
+            max="20"
+            step="1"
+            bind:value={metronomeSpeed}
+        />
 
-    <div class="sound-selection-buttons">
+        <div class="sound-selection-buttons">
+            <button
+                on:click={() => {
+                    currentSound = "metronome.mp3";
+                    affectPitch = false;
+                }}>Metronome</button
+            >
+            <button
+                on:click={() => {
+                    currentSound = "mouse.ogg";
+                    affectPitch = false;
+                }}>Mouse Click</button
+            >
+            <button
+                on:click={() => {
+                    currentSound = "keyboard.ogg";
+                    affectPitch = true;
+                }}>Keyboard Click</button
+            >
+        </div>
+        <br />
         <button
             on:click={() => {
-                currentSound = "metronome.mp3";
-                affectPitch = false;
-            }}>Metronome</button
+                metronomeOn = false;
+            }}
         >
-        <button
-            on:click={() => {
-                currentSound = "mouse.ogg";
-                affectPitch = false;
-            }}>Mouse Click</button
-        >
-        <button
-            on:click={() => {
-                currentSound = "keyboard.ogg";
-                affectPitch = true;
-            }}>Keyboard Click</button
-        >
+            Metronome On
+        </button>
     </div>
-</div>
+{:else}
+    <button
+        on:click={() => {
+            metronomeOn = true;
+        }}
+    >
+        Metronome Off
+    </button>
+{/if}
