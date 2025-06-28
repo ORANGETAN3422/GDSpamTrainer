@@ -10,6 +10,7 @@
 
     let clickTimes = [];
     let clickIntervals = [];
+    let releaseTimes = [];
     let keyReleased = true;
 
     function handleKeydown(e) {
@@ -33,6 +34,7 @@
         if (!testActive) return;
 
         keyReleased = true;
+        releaseTimes.push(performance.now()); // <-- record release timestamp
     }
 
     onMount(() => {
@@ -40,6 +42,7 @@
         document.addEventListener("keyup", handleKeyup);
         return () => {
             document.removeEventListener("keydown", handleKeydown);
+            document.removeEventListener("keyup", handleKeyup); // remove this too
         };
     });
 
@@ -47,8 +50,18 @@
         currTestTime = testTime;
         clickTimes = [];
         clickIntervals = [];
+        releaseTimes = [];
         keyReleased = true;
     }
 </script>
 
-<ResultDisplay bind:timeLeft bind:testTime bind:currTestTime bind:clickIntervals bind:testActive bind:debouncing/>
+<ResultDisplay 
+    bind:timeLeft 
+    bind:testTime 
+    bind:currTestTime 
+    bind:clickIntervals 
+    bind:testActive 
+    bind:debouncing
+    bind:releaseTimes
+    bind:clickTimes
+/>

@@ -2,6 +2,7 @@
     import AdvancedResultsDropdown from "./AdvancedResultsDropdown.svelte";
     import ResultsGraph from "./ResultsGraph.svelte";
     import StopTestButton from "../StopTestButton.svelte";
+    import WaveSimulator from "./WaveSimulator.svelte";
 
     export let testActive;
     export let timeLeft;
@@ -9,6 +10,11 @@
     export let testTime;
     export let currTestTime;
     export let debouncing;
+    export let releaseTimes;
+    export let clickTimes;
+
+    let showGraph = true;
+    let showWave = true;
 
     function formatMilliseconds(ms) {
         let minutes = Math.floor(ms / 60000);
@@ -30,7 +36,13 @@
     </p>
     <br />
     {#if clickIntervals}
-        <ResultsGraph {clickIntervals} />
+        {#if showGraph}
+            <ResultsGraph {clickIntervals} />
+            <br />
+        {/if}
+        {#if showWave}
+            <WaveSimulator {clickTimes} {releaseTimes} {testActive} />
+        {/if}
     {/if}
 </main>
 
@@ -44,6 +56,9 @@
             : "0"} cps
     </div>
     <StopTestButton bind:testActive bind:debouncing />
+    <br />
+    <button on:click={() => {showGraph = !showGraph}}>Graph: {showGraph ? "On" : "Off"}</button>
+    <button on:click={() => {showWave = !showWave}}>Wave: {showWave ? "On" : "Off"}</button>
     <div class="dropdown-wrapper">
         <b>More Stats</b>
         <AdvancedResultsDropdown bind:clickIntervals />
