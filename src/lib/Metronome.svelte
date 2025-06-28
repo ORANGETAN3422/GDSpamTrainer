@@ -52,14 +52,14 @@
     }
 
     // React to testActive changes
-    $: if (testActive) {
+    $: if (testActive && metronomeOn) {
         initAudio().then(startRepeating);
     } else {
         stopRepeating();
     }
 
     // React to sound change WHILE playing
-    $: if (testActive && currentSound) {
+    $: if (testActive && currentSound && metronomeOn) {
         initAudio();
     }
 
