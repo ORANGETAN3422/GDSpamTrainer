@@ -100,12 +100,8 @@
             waveAngle = 0;
         }
 
-        let offsetDist = 7;
-        waveX = currentX + offsetDist;
-        waveY =
-            waveAngle === 0
-                ? currentY
-                : currentY + (goingUp === false ? offsetDist : -offsetDist);
+        waveX = currentX;
+        waveY = currentY;
 
         // Generate Path
         let d = `M${points[0].x},${points[0].y}`;
@@ -200,7 +196,7 @@
             <g
                 transform={`translate(${waveX},${waveY}) rotate(${smoothedWaveAngle})`}
             >
-                <polygon points="0,0 -16,-8 -16,8" fill={lineColor} />
+                <polygon points="10,0 -6,-8 -6,8" fill={lineColor} />
             </g>
         {/if}
     </g>

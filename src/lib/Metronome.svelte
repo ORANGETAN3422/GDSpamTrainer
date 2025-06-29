@@ -107,7 +107,7 @@
                 metronomeOn = false;
             }}
         >
-            Metronome On
+            Turn off metronone
         </button>
     </div>
 {:else}
@@ -116,6 +116,6 @@
             metronomeOn = true;
         }}
     >
-        Metronome Off
+        Turn on metronome
     </button>
 {/if}
